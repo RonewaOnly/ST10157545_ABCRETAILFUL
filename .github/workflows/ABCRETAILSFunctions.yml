@@ -1,0 +1,62 @@
+name: Build and deploy .NET Core application to Function App ABCRETAILSFunctions
+on:
+  push:
+    branches:
+    - master
+permissions:
+  id-token: write
+  contents: read
+env:
+  AZURE_FUNCTIONAPP_NAME: ABCRETAILSFunctions
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: ABCRETAIL.Functions\published
+  CONFIGURATION: Release
+  DOTNET_CORE_VERSION: 10.0.x
+  WORKING_DIRECTORY: ABCRETAIL.Functions
+  DOTNET_CORE_VERSION_INPROC: 6.0.x
+jobs:
+  build:
+    environment: ABCRETAILSFunctions_Env
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+    - name: Setup .NET Core (for inproc extensions)
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_CORE_VERSION_INPROC }}
+        dotnet-quality: preview
+    - name: Restore
+      run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
+    - name: Build
+      run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
+    - name: Publish
+      run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}"
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: functionapp
+        path: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+  deploy:
+    environment: ABCRETAILSFunctions_Env
+    runs-on: windows-latest
+    needs: build
+    steps:
+    - name: Download artifact from build job
+      uses: actions/download-artifact@v4
+      with:
+        name: functionapp
+        path: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        client-id: ${{ vars.ABCRETAILSFunctions_CLIENT_ID_C7B8 }}
+        tenant-id: ${{ vars.ABCRETAILSFunctions_TENANT_ID_C7B8 }}
+        subscription-id: ${{ vars.ABCRETAILSFunctions_SUBSCRIPTION_ID_C7B8 }}
+    - name: Deploy to Azure Function App
+      uses: Azure/functions-action@v1
+      with:
+        app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+        package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
