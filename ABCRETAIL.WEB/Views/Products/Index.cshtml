@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Product>
+@{
+    ViewData["Title"] = "Products";
+}
+
+<div class="page-header">
+    <h1>Products</h1>
+    <a class="btn" asp-action="Create">+ New Product</a>
+</div>
+
+<div class="product-grid">
+    @foreach (var p in Model)
+    {
+        <div class="product-card">
+            @if (!string.IsNullOrEmpty(p.ImageUrl))
+            {
+                <img src="@p.ImageUrl" alt="@p.ProductName" class="product-image" />
+            }
+            else
+            {
+                <div class="product-image placeholder">No Image</div>
+            }
+            <div class="product-body">
+                <h3>@p.ProductName</h3>
+                <p class="category">@p.Category</p>
+                <p class="price">R@(p.Price.ToString("N2"))</p>
+                <p class="stock">Stock: @p.StockQuantity</p>
+                <div class="actions">
+                    <a asp-action="Details" asp-route-partitionKey="@p.PartitionKey" asp-route-rowKey="@p.RowKey">View</a>
+                    <a asp-action="Edit" asp-route-partitionKey="@p.PartitionKey" asp-route-rowKey="@p.RowKey">Edit</a>
+                    @if (!string.IsNullOrEmpty(p.ImageUrl))
+                    {
+                        <a href="@p.ImageUrl" download>Download</a>
+                    }
+                    <a class="danger" asp-action="Delete" asp-route-partitionKey="@p.PartitionKey" asp-route-rowKey="@p.RowKey">Delete</a>
+                </div>
+            </div>
+        </div>
+    }
+    @if (!Model.Any())
+    {
+        <p class="empty">No products yet.</p>
+    }
+</div>

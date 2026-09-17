@@ -1,0 +1,33 @@
+﻿@model Product
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<h1>@Model.ProductName</h1>
+
+@if (!string.IsNullOrEmpty(Model.ImageUrl))
+{
+    <img src="@Model.ImageUrl" alt="@Model.ProductName" class="product-image preview" />
+}
+
+<dl class="detail-list">
+    <dt>Product Id</dt>
+    <dd>@Model.RowKey</dd>
+    <dt>Category</dt>
+    <dd>@Model.Category</dd>
+    <dt>Description</dt>
+    <dd>@Model.Description</dd>
+    <dt>Price</dt>
+    <dd>R@(Model.Price.ToString("N2"))</dd>
+    <dt>Stock Quantity</dt>
+    <dd>@Model.StockQuantity</dd>
+</dl>
+
+<div class="form-actions">
+    <a class="btn" asp-action="Edit" asp-route-partitionKey="@Model.PartitionKey" asp-route-rowKey="@Model.RowKey">Edit</a>
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <a class="btn secondary" href="@Model.ImageUrl" download>Download Image</a>
+    }
+    <a class="btn secondary" asp-action="Index">Back to List</a>
+</div>

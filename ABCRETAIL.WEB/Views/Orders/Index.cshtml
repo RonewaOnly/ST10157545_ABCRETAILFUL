@@ -1,0 +1,52 @@
+﻿@model IEnumerable<OrderMessage>
+@{
+    ViewData["Title"] = "Order Processing";
+}
+
+<div class="page-header">
+    <h1>Order Processing Queue</h1>
+    <a class="btn" asp-action="Create">+ Place Order</a>
+</div>
+
+<p class="queue-count">Approximate messages currently in queue: <strong>@ViewBag.QueueCount</strong></p>
+
+<form asp-action="ProcessNext" method="post" style="margin-bottom:1.5rem;">
+    <button type="submit" class="btn secondary">Process Next Order (simulate worker)</button>
+</form>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Order Id</th>
+            <th>Customer</th>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Total</th>
+            <th>Order Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var o in Model)
+        {
+            <tr>
+                <td>@(o.OrderId.Substring(0, 8))&hellip;</td>
+                <td>@o.CustomerName</td>
+                <td>@o.ProductName <span class="category">(@o.ProductCategory)</span></td>
+                <td>@o.Quantity</td>
+                <td>R@(o.TotalPrice.ToString("N2"))</td>
+                <td>@o.OrderDate.ToString("dd MMM yyyy HH:mm")</td>
+                <td><span class="badge">@o.Status</span></td>
+            </tr>
+        }
+        @if (!Model.Any())
+        {
+            <tr><td colspan="7" class="empty">No orders currently queued.</td></tr>
+        }
+    </tbody>
+</table>
+
+<p class="hint">
+    Messages are read from Azure Queue Storage (<code>order-processing</code> queue) in JSON format.
+    "Process Next Order" receives and deletes the oldest message, simulating an inventory-processing worker.
+</p>

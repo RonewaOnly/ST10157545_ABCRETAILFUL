@@ -1,0 +1,45 @@
+﻿@model IEnumerable<CustomerProfile>
+@{
+    ViewData["Title"] = "Customer Profiles";
+}
+
+<div class="page-header">
+    <h1>Customer Profiles</h1>
+    <a class="btn" asp-action="Create">+ New Customer</a>
+</div>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>City</th>
+            <th>Country</th>
+            <th>Registered</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.FullName</td>
+                <td>@c.Email</td>
+                <td>@c.PhoneNumber</td>
+                <td>@c.City</td>
+                <td>@c.Country</td>
+                <td>@c.DateRegistered.ToString("dd MMM yyyy")</td>
+                <td class="actions">
+                    <a asp-action="Details" asp-route-id="@c.RowKey">View</a>
+                    <a asp-action="Edit" asp-route-id="@c.RowKey">Edit</a>
+                    <a class="danger" asp-action="Delete" asp-route-id="@c.RowKey">Delete</a>
+                </td>
+            </tr>
+        }
+        @if (!Model.Any())
+        {
+            <tr><td colspan="7" class="empty">No customer profiles yet.</td></tr>
+        }
+    </tbody>
+</table>

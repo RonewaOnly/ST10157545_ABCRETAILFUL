@@ -1,0 +1,23 @@
+﻿@model CustomerProfile
+@{
+    ViewData["Title"] = "Delete Customer";
+}
+
+<h1>Delete Customer Profile</h1>
+<p>Are you sure you want to delete <strong>@Model.FullName</strong>? This action cannot be undone.</p>
+
+<dl class="detail-list">
+    <dt>Email</dt>
+    <dd>@Model.Email</dd>
+    <dt>Phone</dt>
+    <dd>@Model.PhoneNumber</dd>
+    <dt>City</dt>
+    <dd>@Model.City</dd>
+</dl>
+
+<form asp-action="Delete" asp-route-id="@Model.RowKey" method="post" class="form">
+    <div class="form-actions">
+        <button type="submit" class="btn danger">Yes, Delete</button>
+        <a class="btn secondary" asp-action="Index">Cancel</a>
+    </div>
+</form>

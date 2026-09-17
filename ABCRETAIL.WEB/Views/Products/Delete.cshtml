@@ -1,0 +1,19 @@
+﻿@model Product
+@{
+    ViewData["Title"] = "Delete Product";
+}
+
+<h1>Delete Product</h1>
+<p>Are you sure you want to delete <strong>@Model.ProductName</strong>? This will also remove its image from Blob Storage. This action cannot be undone.</p>
+
+@if (!string.IsNullOrEmpty(Model.ImageUrl))
+{
+    <img src="@Model.ImageUrl" alt="@Model.ProductName" class="product-image preview" />
+}
+
+<form asp-action="Delete" asp-route-partitionKey="@Model.PartitionKey" asp-route-rowKey="@Model.RowKey" method="post" class="form">
+    <div class="form-actions">
+        <button type="submit" class="btn danger">Yes, Delete</button>
+        <a class="btn secondary" asp-action="Index">Cancel</a>
+    </div>
+</form>

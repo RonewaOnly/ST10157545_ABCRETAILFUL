@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ABCRETAIL.Functions/ABCRETAIL.Functions.csproj" />
+  <Project Path="ABCRETAIL.WEB/ABCRETAIL.WEB.csproj" />
+</Solution>

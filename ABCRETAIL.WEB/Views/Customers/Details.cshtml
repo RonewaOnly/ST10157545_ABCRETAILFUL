@@ -1,0 +1,30 @@
+﻿@model CustomerProfile
+@{
+    ViewData["Title"] = "Customer Details";
+}
+
+<h1>@Model.FullName</h1>
+
+<dl class="detail-list">
+    <dt>Customer Id</dt>
+    <dd>@Model.RowKey</dd>
+    <dt>Email</dt>
+    <dd>@Model.Email</dd>
+    <dt>Phone</dt>
+    <dd>@Model.PhoneNumber</dd>
+    <dt>Shipping Address</dt>
+    <dd>@Model.ShippingAddress</dd>
+    <dt>City</dt>
+    <dd>@Model.City</dd>
+    <dt>Postal Code</dt>
+    <dd>@Model.PostalCode</dd>
+    <dt>Country</dt>
+    <dd>@Model.Country</dd>
+    <dt>Registered</dt>
+    <dd>@Model.DateRegistered.ToString("dd MMM yyyy HH:mm")</dd>
+</dl>
+
+<div class="form-actions">
+    <a class="btn" asp-action="Edit" asp-route-id="@Model.RowKey">Edit</a>
+    <a class="btn secondary" asp-action="Index">Back to List</a>
+</div>

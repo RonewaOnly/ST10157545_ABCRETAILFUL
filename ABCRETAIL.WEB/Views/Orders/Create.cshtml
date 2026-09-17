@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Place Order";
+    var customers = (IEnumerable<CustomerProfile>)ViewBag.Customers;
+    var products = (IEnumerable<Product>)ViewBag.Products;
+}
+
+<h1>Place Order</h1>
+
+<form asp-action="Create" method="post" class="form" onsubmit="splitProductKey(document.getElementById('productKey'))">
+    <div class="form-group">
+        <label for="customerId">Customer</label>
+        <select id="customerId" name="customerId" required>
+            <option value="">-- Select customer --</option>
+            @foreach (var c in customers)
+            {
+                <option value="@c.RowKey">@c.FullName (@c.Email)</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="productKey">Product</label>
+        <select id="productKey" name="productKey" required onchange="splitProductKey(this)">
+            <option value="">-- Select product --</option>
+            @foreach (var p in products)
+            {
+                <option value="@p.PartitionKey|@p.RowKey">@p.ProductName &mdash; @p.Category (Stock: @p.StockQuantity)</option>
+            }
+        </select>
+        <input type="hidden" id="productPartitionKey" name="productPartitionKey" />
+        <input type="hidden" id="productRowKey" name="productRowKey" />
+    </div>
+
+    <div class="form-group">
+        <label for="quantity">Quantity</label>
+        <input type="number" id="quantity" name="quantity" min="1" value="1" required />
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn">Place Order</button>
+        <a class="btn secondary" asp-action="Index">Cancel</a>
+    </div>
+</form>
+
+<script>
+    function splitProductKey(select) {
+        const [partitionKey, rowKey] = (select.value || "|").split("|");
+        document.getElementById("productPartitionKey").value = partitionKey;
+        document.getElementById("productRowKey").value = rowKey;
+    }
+</script>

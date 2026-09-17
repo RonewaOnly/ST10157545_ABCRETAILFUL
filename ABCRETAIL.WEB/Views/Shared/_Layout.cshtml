@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ABC Retail</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a class="brand" asp-controller="Home" asp-action="Index">ABC Retail</a>
+            <div class="nav-links">
+                <a asp-controller="Customers" asp-action="Index">Customer Profiles</a>
+                <a asp-controller="Products" asp-action="Index">Products</a>
+                <a asp-controller="Orders" asp-action="Index">Orders</a>
+                <a asp-controller="Documents" asp-action="Index">Documents</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-error">@TempData["Error"]</div>
+        }
+        @RenderBody()
+    </main>
+
+    <footer>
+        <p>ABC Retail Projct 1 Built with Azure Table Storage &amp; Azure Blob Storage</p>
+    </footer>
+</body>
+</html>
