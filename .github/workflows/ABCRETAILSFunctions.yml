@@ -3,9 +3,6 @@ on:
   push:
     branches:
     - master
-permissions:
-  id-token: write
-  contents: read
 env:
   AZURE_FUNCTIONAPP_NAME: ABCRETAILSFunctions
   AZURE_FUNCTIONAPP_PACKAGE_PATH: ABCRETAIL.Functions\published
@@ -15,7 +12,6 @@ env:
   DOTNET_CORE_VERSION_INPROC: 6.0.x
 jobs:
   build:
-    environment: ABCRETAILSFunctions_Env
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
@@ -40,7 +36,6 @@ jobs:
         name: functionapp
         path: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
   deploy:
-    environment: ABCRETAILSFunctions_Env
     runs-on: windows-latest
     needs: build
     steps:
@@ -49,14 +44,9 @@ jobs:
       with:
         name: functionapp
         path: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-    - name: Azure Login
-      uses: azure/login@v2
-      with:
-        client-id: ${{ vars.ABCRETAILSFunctions_CLIENT_ID_C7B8 }}
-        tenant-id: ${{ vars.ABCRETAILSFunctions_TENANT_ID_C7B8 }}
-        subscription-id: ${{ vars.ABCRETAILSFunctions_SUBSCRIPTION_ID_C7B8 }}
     - name: Deploy to Azure Function App
       uses: Azure/functions-action@v1
       with:
         app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+        publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
         package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}

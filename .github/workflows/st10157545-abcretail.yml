@@ -3,9 +3,6 @@ on:
   push:
     branches:
     - master
-permissions:
-  id-token: write
-  contents: read
 env:
   AZURE_WEBAPP_NAME: st10157545-abcretail
   AZURE_WEBAPP_PACKAGE_PATH: ABCRETAIL.WEB\published
@@ -14,7 +11,6 @@ env:
   WORKING_DIRECTORY: ABCRETAIL.WEB
 jobs:
   build:
-    environment: st10157545_abcretail_Env
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
@@ -36,7 +32,6 @@ jobs:
         name: webapp
         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
   deploy:
-    environment: st10157545_abcretail_Env
     runs-on: windows-latest
     needs: build
     steps:
@@ -45,14 +40,9 @@ jobs:
       with:
         name: webapp
         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-    - name: Azure Login
-      uses: azure/login@v2
-      with:
-        client-id: ${{ vars.st10157545_abcretail_CLIENT_ID_DE0E }}
-        tenant-id: ${{ vars.st10157545_abcretail_TENANT_ID_39E9 }}
-        subscription-id: ${{ vars.st10157545_abcretail_SUBSCRIPTION_ID_39E9 }}
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
